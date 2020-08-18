@@ -2,14 +2,15 @@ import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import { TaskType, FilterValueType } from './App'
 
 type PropsType = {
+	id: string
 	title: string
 	tasks: Array<TaskType>
-	removeTask: (taskId: string) => void
-	changeFilter: (value: FilterValueType) => void
-	addTask: (title: string) => void
-	changeTaskStatus: (id: string, isDone: boolean) => void
+	removeTask: (taskId: string, todoListID: string ) => void
+	changeFilter: (value: FilterValueType, todoListId: string) => void
+	addTask: (title: string, todoListID: string) => void
+	changeTaskStatus: (id: string, isDone: boolean, todoListID: string) => void
 	filter: string
-	selectedOll: (value: boolean)=> void
+	removeTodoList: (todoListID: string) => void
 }
 
 function TodoList(props: PropsType) {
@@ -19,7 +20,7 @@ function TodoList(props: PropsType) {
 
 	const addTask = () => {
 		if (title.trim() !== "") {
-			props.addTask(title);
+			props.addTask(title, props.id);
 			setTitle("")
 		}else {
 			setError("error")
@@ -37,19 +38,12 @@ function TodoList(props: PropsType) {
 		}
 	};
 
-	const onAllClickHandler = () => props.changeFilter("all");
-	const onActiveClickHandler = () => props.changeFilter("active");
-	const onCompletedClickHandler = () => props.changeFilter("completed");
-
-	const allSelectedHeandler = (e: ChangeEvent<HTMLInputElement> ) => {
-			props.selectedOll(e.currentTarget.checked)
-	}
-
-	const isSelectedAll = props.tasks.filter(t => t.isDone).length === props.tasks.length
-	// const isSelectedAll = props.tasks.every(t => t.isDone)
+	const onAllClickHandler = () => props.changeFilter("all", props.id);
+	const onActiveClickHandler = () => props.changeFilter("active", props.id);
+	const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
 
 	return <div>
-		<h3>{props.title}</h3>
+		<h3>{props.title} <button onClick={() => {props.removeTodoList(props.id)}} >x</button></h3>
 		<div>
 			<input
 				value={title}
@@ -58,17 +52,16 @@ function TodoList(props: PropsType) {
 				className={error ? 'error' : ''}
 			/>
 			<button onClick={addTask}>+</button>
-			<input type='checkbox' checked={isSelectedAll} onChange={allSelectedHeandler}/> <span>selected all</span>
 			{error && <div className="error-message">{error}</div> }
 		</div>
 		<ul>
 			{
 				props.tasks.map(task => {
 
-					const removeTask = () => {props.removeTask(task.id)}
+					const removeTask = () => {props.removeTask(task.id, props.id)}
 					const onChangeHadler = (e: ChangeEvent<HTMLInputElement>) => {
 						let newIsDone = e.currentTarget.checked
-						props.changeTaskStatus(task.id, newIsDone)
+						props.changeTaskStatus(task.id, newIsDone, props.id)
 					
 					
 					}
