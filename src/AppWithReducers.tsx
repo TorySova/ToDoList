@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import './App.css';
 import TodoList from './TodoList';
 import { v1 } from "uuid";
 import AddItemForm from './AddItemForm';
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Grid, Paper } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import { AddTodoListAC, ChangeTodoListFilterAC, ChangeToodoListTitleAC, RemoveTodoListAC, todoListReducer } from './state/todoListReducer';
+import { addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer, changeTaskTitleAC } from './state/tasksReducer';
 
 export type TaskType = {
 	id: string
@@ -24,17 +26,17 @@ export type TaskStateType = {
 	[key: string]: Array<TaskType>
 }
 
-function App() {
-	
+function AppWithReducers() {
+
 	let todolistID1 = v1();
 	let todolistID2 = v1();
 
-	let [todoLists, setTodolists] = useState<Array<TodoListType>>([
+	let [todoLists, dispatchTodolists] = useReducer(todoListReducer, [
 		{ id: todolistID1, title: 'One', filter: 'all' },
 		{ id: todolistID2, title: 'Two', filter: 'all' },
 	])
 
-	let [tasks, setTasks] = useState<TaskStateType>({
+	let [tasks, dispatchTasks] = useReducer(tasksReducer, {
 		[todolistID1]: [
 			{ id: v1(), title: "js", isDone: false },
 			{ id: v1(), title: "css", isDone: false },
@@ -51,71 +53,46 @@ function App() {
 
 
 	function changeFilter(filter: FilterValueType, todoListID: string) {
-		let todoList = todoLists.find(tl => tl.id === todoListID);
-		if (todoList) {
-			todoList.filter = filter;
-			setTodolists([...todoLists])
-		}
+		const action = ChangeTodoListFilterAC(filter, todoListID)
+		dispatchTodolists(action)
 	}
 
 	function removeTask(taskId: string, todoListID: string) {
-		let todoList = tasks[todoListID];
-		tasks[todoListID] = todoList.filter(t => t.id !== taskId);
-		setTasks({ ...tasks })
+		const action = removeTaskAC(taskId, todoListID)
+		dispatchTasks(action)
 	}
 
 	function addTack(title: string, todoListID: string) {
-		let newTask = { id: v1(), title: title, isDone: false };
-		let todoList = tasks[todoListID];
-		tasks[todoListID] = [newTask, ...todoList]
-		setTasks({ ...tasks })
+		const action = addTaskAC(title, todoListID)
+		dispatchTasks(action)
 	}
 
-	function changeStatus(id: string, isDone: boolean, todoListID: string) {
-		let todoList = tasks[todoListID];
-		let task = todoList.find(t => t.id === id)
-		if (task) {
-			task.isDone = isDone
-			setTasks({ ...tasks })
-		}
+	function changeStatus(taskId: string, isDone: boolean, todoListID: string) {
+		const action = changeTaskStatusAC(taskId, isDone, todoListID)
+		dispatchTasks(action)
 	}
 
 	function addTodoList(title: string) {
-		let newTodoListID = v1();//генерим новый aйди
-		let newTodoList: TodoListType = { //тип листа
-			id: newTodoListID,
-			title: title,
-			filter: "all"
-		};
-		setTodolists([newTodoList, ...todoLists]) //добавляем лист 
-		setTasks({  //в масиве тасок новый таски
-			...tasks,
-			[newTodoListID]: [] //доп.новое свойство
-		})
+		const action = AddTodoListAC(title)
+		dispatchTodolists(action)
+		dispatchTasks(action)
 	}
 
 	function removeTodoList(todoListID: string) {
-		let newTodoLists = todoLists.filter(tl => tl.id !== todoListID);
-		setTodolists(newTodoLists);
-		delete tasks[todoListID]
-		setTasks({ ...tasks })
+		const action = RemoveTodoListAC(todoListID)
+		dispatchTodolists(action)
+		dispatchTasks(action)
+
 	}
 
 	function changeTaskitle(id: string, title: string, todoListID: string) {
-		let todoList = tasks[todoListID];
-		let task = todoList.find(t => t.id === id)
-		if (task) {
-			task.title = title
-			setTasks({ ...tasks })
-		}
+		const action = changeTaskTitleAC(id, title, todoListID)
+		dispatchTasks(action)
 	}
 
 	function changeTodoListTitle(todoListID: string, newTitle: string) {
-		const todoList = todoLists.find(tl => tl.id === todoListID);
-		if (todoList) {
-			todoList.title = newTitle;
-			setTodolists([...todoLists])
-		}
+		const action = ChangeToodoListTitleAC(todoListID, newTitle)
+		dispatchTodolists(action)
 	}
 
 	return (
@@ -174,4 +151,4 @@ function App() {
 
 
 
-export default App;
+export default AppWithReducers;

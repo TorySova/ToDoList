@@ -1,9 +1,11 @@
 import React, { ChangeEvent } from 'react';
-import { TaskType, FilterValueType } from './App'
+import { TaskType, FilterValueType, TodoListType } from './App'
 import AddItemForm from './AddItemForm';
 import EditableSpan from './EditableSpan';
 import { IconButton, Button, Checkbox } from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
+import { useSelector } from 'react-redux';
+import { AppRootStateType } from './state/store';
 
 type PropsType = {
 	id: string
@@ -20,6 +22,8 @@ type PropsType = {
 }
 
 function TodoList(props: PropsType) {
+
+	// let todos = useSelector<AppRootStateType, TodoListType>(state => state.todolists[+props.id])
 
 	const addOneTask = (title: string) => {
 		props.addTask(title, props.id);
