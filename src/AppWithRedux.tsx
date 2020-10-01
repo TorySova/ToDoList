@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './App.css';
-import TodoList from './TodoList';
 import AddItemForm from './AddItemForm';
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Grid, Paper } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -8,6 +7,7 @@ import { AddTodoListAC, ChangeTodoListFilterAC, ChangeToodoListTitleAC, RemoveTo
 import { addTaskAC, changeTaskStatusAC, removeTaskAC, changeTaskTitleAC } from './state/tasksReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootStateType } from './state/store';
+import { TodoList } from './TodoList';
 
 export type TaskType = {
 	id: string
@@ -28,71 +28,51 @@ export type TaskStateType = {
 }
 
 function AppWithRedux() {
+
+	console.log('App is called')
 	const todoLists = useSelector<AppRootStateType, Array<TodoListType>>(state => state.todolists)
 	let task =  useSelector<AppRootStateType, TaskStateType>(state => state.tasks)
 
 	let dispatch = useDispatch()
 
-	// let [todoLists, dispatchTodolists] = useReducer(todoListReducer, [
-	// 	{ id: todolistID1, title: 'One', filter: 'all' },
-	// 	{ id: todolistID2, title: 'Two', filter: 'all' },
-	// ])
-
-	// let [tasks, dispatchTasks] = useReducer(tasksReducer, {
-	// 	[todolistID1]: [
-	// 		{ id: v1(), title: "js", isDone: false },
-	// 		{ id: v1(), title: "css", isDone: false },
-	// 		{ id: v1(), title: "react", isDone: false },
-	// 		{ id: v1(), title: "redux", isDone: false }
-	// 	],
-	// 	[todolistID2]: [
-	// 		{ id: v1(), title: "Dog", isDone: true },
-	// 		{ id: v1(), title: "Cat", isDone: false },
-	// 		{ id: v1(), title: "Pig", isDone: false },
-	// 		{ id: v1(), title: "Horse", isDone: true }
-	// 	],
-	// })
-
-
-	function changeFilter(filter: FilterValueType, todoListID: string) {
+	const changeFilter = useCallback((filter: FilterValueType, todoListID: string) => {
 		const action = ChangeTodoListFilterAC(filter, todoListID)
 		dispatch(action)
-	}
+	}, [dispatch])
 
-	function removeTask(taskId: string, todoListID: string) {
+	const removeTask = useCallback((taskId: string, todoListID: string) => {
 		const action = removeTaskAC(taskId, todoListID)
 		dispatch(action)
-	}
+	}, [dispatch])
 
-	function addTack(title: string, todoListID: string) {
+	const addTack = useCallback((title: string, todoListID: string) => {
 		dispatch( addTaskAC(title, todoListID))
-	}
+	}, [dispatch])
 
-	function changeStatus(taskId: string, isDone: boolean, todoListID: string) {
+	const changeStatus = useCallback((taskId: string, isDone: boolean, todoListID: string) => {
 		const action = changeTaskStatusAC(taskId, isDone, todoListID)
 		dispatch(action)
-	}
+	}, [dispatch])
 
-	function addTodoList(title: string) {
+	const addTodoList = useCallback((title: string) => {
 		const action = AddTodoListAC(title)
 		dispatch(action)
-	}
+	}, [dispatch])
 
-	function removeTodoList(todoListID: string) {
+	const removeTodoList = useCallback((todoListID: string) => {
 		const action = RemoveTodoListAC(todoListID)
 		dispatch(action)
+	}, [dispatch])
 
-	}
-
-	function changeTaskitle(id: string, title: string, todoListID: string) {
+	const changeTaskitle = useCallback((id: string, title: string, todoListID: string) => {
 		const action = changeTaskTitleAC(id, title, todoListID)
 		dispatch(action)
-	}
+	}, [dispatch])
 
-	function changeTodoListTitle(todoListID: string, newTitle: string) {
+	const changeTodoListTitle = useCallback((todoListID: string, newTitle: string) => {
 		const action = ChangeToodoListTitleAC(todoListID, newTitle)
 		dispatch(action)
-	}
+	}, [dispatch])
 
 	return (
 		<div className="App">
@@ -115,12 +95,7 @@ function AppWithRedux() {
 					{
 						todoLists.map(tl => {
 							let tasksForTodoList = task[tl.id];
-							if (tl.filter === "active") {
-								tasksForTodoList = task[tl.id].filter(tl => tl.isDone === false)
-							}
-							if (tl.filter === "completed") {
-								tasksForTodoList = task[tl.id].filter(tl => tl.isDone === true)
-							}
+							
 							return (
 								<Grid item key={tl.id}>
 									<Paper style={{ padding: "10px" }} elevation={3}>
