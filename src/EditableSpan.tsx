@@ -21,7 +21,7 @@ const EditableSpan = React.memo((props: EditableSpanPropsType) => {
 
 	const deActivatedEditMode = () => {
 		setEditMode(false);
-		if(title.trim()){
+		if(title){
 			props.changeValue(title)
 		}
 	}
