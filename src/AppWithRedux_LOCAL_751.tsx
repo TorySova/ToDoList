@@ -72,11 +72,7 @@ function AppWithRedux() {
 	const changeTodoListTitle = useCallback((todoListID: string, newTitle: string) => {
 		const action = ChangeToodoListTitleAC(todoListID, newTitle)
 		dispatch(action)
-<<<<<<< HEAD
 	}, [dispatch])
-=======
-	}, [])
->>>>>>> 81a1719ccdd25ff1d0bdbfb5f4fa7fa0a46d22a0
 
 	return (
 		<div className="App">
