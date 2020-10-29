@@ -42,7 +42,7 @@ function App() {
 			{ id: v1(), title: "redux", isDone: false }
 		],
 		[todolistID2]: [
-			{ id: v1(), title: "ternhggfc", isDone: true },
+			{ id: v1(), title: "Dog", isDone: true },
 			{ id: v1(), title: "Cat", isDone: false },
 			{ id: v1(), title: "Pig", isDone: false },
 			{ id: v1(), title: "Horse", isDone: true }
