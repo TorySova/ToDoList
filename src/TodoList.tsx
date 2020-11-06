@@ -5,8 +5,6 @@ import EditableSpan from './EditableSpan';
 import { IconButton, Button, Checkbox } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { Task } from './Task'
-import { useSelector } from 'react-redux';
-import { AppRootStateType } from './state/store';
 
 type PropsType = {
 	id: string
