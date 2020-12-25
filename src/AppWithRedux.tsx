@@ -3,8 +3,8 @@ import './App.css';
 import AddItemForm from './AddItemForm';
 import { AppBar, Toolbar, IconButton, Typography, Button, Container, Grid, Paper } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AddTodoListAC, ChangeTodoListFilterAC, ChangeToodoListTitleAC, RemoveTodoListAC, setTodolistsAC, TodolistDomainType, FilterValuesType } from './state/todoListReducer';
-import { addTaskAC, changeTaskStatusAC, removeTaskAC, changeTaskTitleAC } from './state/tasksReducer';
+import { AddTodoListAC, ChangeTodoListFilterAC, ChangeToodoListTitleAC, RemoveTodoListAC, setTodolistsAC, TodolistDomainType, FilterValuesType, fetchTodolistsThunkTS } from './state/todoListReducer';
+import { addTaskAC, changeTaskStatusAC, removeTaskAC, changeTaskTitleAC, addTaskTC, removeTaskTC, updateTaskStatusTC } from './state/tasksReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootStateType } from './state/store';
 import { TodoList } from './TodoList';
@@ -24,10 +24,7 @@ function AppWithRedux() {
 	let dispatch = useDispatch()
 
 	useEffect(() => {
-		todolistAPI.getTodo()
-			.then((res) => {
-				dispatch(setTodolistsAC(res.data))
-			})
+		dispatch(fetchTodolistsThunkTS())
 	}, [])
 
 	const changeFilter = useCallback((filter: FilterValuesType, todoListID: string) => {
@@ -36,17 +33,17 @@ function AppWithRedux() {
 	}, [dispatch])
 
 	const removeTask = useCallback((taskId: string, todoListID: string) => {
-		const action = removeTaskAC(taskId, todoListID)
-		dispatch(action)
+		
+		dispatch(removeTaskTC(taskId, todoListID))
 	}, [dispatch])
 
 	const addTack = useCallback((title: string, todoListID: string) => {
-		dispatch( addTaskAC(title, todoListID))
+		dispatch( addTaskTC(title, todoListID))
 	}, [dispatch])
 
 	const changeStatus = useCallback((taskId: string, status: TaskStatuses, todoListID: string) => {
-		const action = changeTaskStatusAC(taskId, status, todoListID)
-		dispatch(action)
+		
+		dispatch(updateTaskStatusTC(taskId, status, todoListID))
 	}, [dispatch])
 
 	const addTodoList = useCallback((title: string) => {

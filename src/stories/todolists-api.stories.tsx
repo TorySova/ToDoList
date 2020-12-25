@@ -105,11 +105,21 @@ export const CreateTask = () => {
 
 export const UpdateTasks = () => {
     const [state, setState] = useState<any>(null)
+    const [description, setDescription] = useState<string>('descripton 1')
+    const [priority, setPriority] = useState<number>(0)
+    const [status, setStatus] = useState<number>(0)
     useEffect(() => {
         const todolistId = '182a241e-01e3-49c1-b1c0-b147c36396ab'
         const taskId = 'f706dbdd-152d-42ca-b3a5-4ee8f5e84ed9'
         const title = 'newNew'
-        todolistAPI.updateTask(todolistId, taskId, title)
+        todolistAPI.updateTask(todolistId, taskId,  {
+            deadline: "",
+            description: description,
+            priority: priority,
+            startDate: "",
+            status: status,
+            title: title
+        })
             .then((res) => {
                 setState(res.data)
             })

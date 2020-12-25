@@ -1,5 +1,6 @@
-import { TodolistType } from './../api/todolist-api';
+import { TodolistType, todolistAPI } from './../api/todolist-api';
 import { v1 } from 'uuid';
+import { Dispatch } from 'redux';
 
 
 type ActionType = RemoveTodolistActionType| 
@@ -41,7 +42,7 @@ export type SetTodolistsActionType = {
      filter: FilterValuesType
  }
 
-export const todoListReducer = (state: Array<TodolistDomainType> = initialState, action: ActionType) => {
+export const todoListReducer = (state: Array<TodolistDomainType> = initialState, action: ActionType): Array<TodolistDomainType> => {
     switch (action.type) {
         case 'REMOVE-TODOLIST':
             return state.filter(tl => tl.id !== action.id);
@@ -55,27 +56,14 @@ export const todoListReducer = (state: Array<TodolistDomainType> = initialState,
             }, ...state]
         case 'CHANGE-TODOLIST-TITLE':
             return state.map(t => t.id === action.id ? {...t, title: action.title} : t)
-            // const todoList = state.find(tl => tl.id === action.id);
-            // if (todoList) {
-            //     todoList.title = action.title;
-            //     return [...state]
-            // }
-            // return state;
         case 'CHANGE-TODOLIST-FILTER':
             return state.map(t => t.id === action.id ? {...t, filter: action.filter} : t)
-            // let todolist = state.find(tl => tl.id === action.id);
-            // if (todolist) {
-            //     todolist.filter = action.filter;
-            //     return [...state]
-            // }
-            // return state;
         case 'SET-TODOLISTS': {
             return action.todolists.map(tl => ({
                 ...tl,
                 filter: 'all' 
             }))
-        }
-             
+        }             
         default:
             return state
     }
@@ -97,3 +85,11 @@ export const setTodolistsAC = (todolists: Array<TodolistType>): SetTodolistsActi
     return {type: 'SET-TODOLISTS', todolists}
  }
  
+ export const fetchTodolistsThunkTS = () => {
+    return (dispatch: Dispatch) => {
+        todolistAPI.getTodo()
+            .then((res) => {
+                dispatch(setTodolistsAC(res.data))
+            })
+    }
+}
