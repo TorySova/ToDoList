@@ -7,7 +7,7 @@ export type TodolistType = {
     title: string
 }
 
-type ResponseType<D = {}> = {
+export type ResponseType<D = {}> = {
     resultCode: number
     messages: Array<string>
     data: D
@@ -81,8 +81,8 @@ export const todolistAPI = {
     deleteTodo(todolistId: string) {
         return instance.delete<ResponseType>(`todo-lists/${todolistId}`)
     },
-    createTodo() {
-        return instance.post<ResponseType<{ item: TodolistType }>>('todo-lists', { title: 'NewNew' })
+    createTodo(title: string) {
+        return instance.post<ResponseType<{ item: TodolistType }>>('todo-lists', { title: title})
     },
     updateTodo(todolistId: string, title: string) {
         return instance.put<ResponseType>(`todo-lists/${todolistId}`, { title })

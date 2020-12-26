@@ -1,3 +1,4 @@
+import { appReducer } from '../app/app-reducer';
 import {tasksReducer} from './tasksReducer';
 import {todoListReducer} from './todoListReducer';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
@@ -7,7 +8,8 @@ import thunk from 'redux-thunk';
 // мы задаём структуру нашего единственного объекта-состояния
 const rootReducer = combineReducers({
    tasks: tasksReducer,
-   todolists: todoListReducer
+   todolists: todoListReducer,
+   app: appReducer
 })
 // непосредственно создаём store
 export const store = createStore(rootReducer, applyMiddleware(thunk));
