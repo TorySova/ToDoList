@@ -1,28 +1,21 @@
 import React, { useCallback, useEffect } from 'react';
-import './App.css';
-import AddItemForm from './AddItemForm';
-import { AppBar, Toolbar, IconButton, Typography, Button, Container, Grid, Paper, LinearProgress } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import { AddTodoListAC, ChangeTodoListFilterAC, ChangeToodoListTitleAC, RemoveTodoListTC, setTodolistsAC, TodolistDomainType, FilterValuesType, fetchTodolistsThunkTS, AddTodoListTC, ChangeToodoListTitleTC } from './state/todoListReducer';
-import { addTaskAC, changeTaskStatusAC, removeTaskAC, changeTaskTitleAC, addTaskTC, removeTaskTC, updateTaskStatusTC } from './state/tasksReducer';
+import AddItemForm from '../common/AddItemForm';
+import { Grid, Paper } from '@material-ui/core';
+import { ChangeTodoListFilterAC, RemoveTodoListTC, TodolistDomainType, FilterValuesType, fetchTodolistsThunkTS, AddTodoListTC, ChangeToodoListTitleTC } from '../state/todoListReducer';
+import { changeTaskTitleAC, addTaskTC, removeTaskTC, updateTaskStatusTC, TaskStateType } from '../state/tasksReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppRootStateType } from './state/store';
-import { TodoList } from './TodoList';
-import { TaskStatuses, TaskType, todolistAPI } from './api/todolist-api';
-import { RequestStatusType } from './app/app-reducer';
-import { ErrorSnackbar } from './components/ErrorSnackbar';
+import { AppRootStateType } from '../state/store';
+import { TodoList } from '../components/TodoList';
+import { TaskStatuses } from '../api/todolist-api';
 
-
-export type TaskStateType = {
-	[key: string]: Array<TaskType>
+type PropsType = {
+    demo?: boolean
 }
 
-function AppWithRedux() {
-
-	console.log('App is called')
-	const todoLists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
+export const TodolistList: React.FC<PropsType> = ({demo = false}) => {
+    const todoLists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
 	let task =  useSelector<AppRootStateType, TaskStateType>(state => state.tasks)
-	const status = useSelector<AppRootStateType , RequestStatusType>((state) => state.app.status)
+	
 	let dispatch = useDispatch()
 
 	useEffect(() => {
@@ -66,25 +59,9 @@ function AppWithRedux() {
 		const action = ChangeToodoListTitleTC(todoListID, newTitle)
 		dispatch(action)
 	}, [dispatch])
-
-
-	return (
-		<div className="App">
-			<ErrorSnackbar/>
-			<AppBar position="sticky" color="inherit" >
-				<Toolbar>
-					<IconButton edge="start" color="primary" aria-label="menu">
-						<MenuIcon />
-					</IconButton>
-					<Typography variant="h6">
-						TodoLists
-    				</Typography>
-					<Button color="primary">Login</Button>
-				</Toolbar>
-				{status === 'loading' && <LinearProgress />}
-			</AppBar>
-			<Container fixed>
-				<Grid container style={{ padding: "15px 0px 15px 0px" }}>
+    return (
+        <div>
+           <Grid container style={{ padding: "15px 0px 15px 0px" }}>
 					<AddItemForm addItem={addTodoList} />
 				</Grid>
 				<Grid container spacing={2}>
@@ -107,19 +84,17 @@ function AppWithRedux() {
 											filter={tl.filter}
 											removeTodoList={removeTodoList}
 											changeTaskTitle={changeTaskitle}
-											changeTodoListTitle={changeTodoListTitle}
+                                            changeTodoListTitle={changeTodoListTitle}
+                                            demo={demo}
 										/>
 									</Paper>
 								</Grid>
 							);
 						})
 					}
-				</Grid>
-			</Container>
-		</div>
-	);
+				</Grid> 
+        </div>
+    )
 }
 
 
-
-export default AppWithRedux;

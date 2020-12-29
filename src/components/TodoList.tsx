@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
-import AddItemForm from './AddItemForm';
-import EditableSpan from './EditableSpan';
+import AddItemForm from '../common/AddItemForm';
+import EditableSpan from '../common/EditableSpan';
 import { IconButton, Button, Checkbox } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { Task } from './Task'
-import { TaskStatuses, TaskType } from './api/todolist-api';
-import { FilterValuesType } from './state/todoListReducer';
-import { fetchTasksTC } from './state/tasksReducer';
+import { TaskStatuses, TaskType } from '../api/todolist-api';
+import { FilterValuesType } from '../state/todoListReducer';
+import { fetchTasksTC } from '../state/tasksReducer';
 import { useDispatch } from 'react-redux';
-import { RequestStatusType } from './app/app-reducer';
+import { RequestStatusType } from '../app/app-reducer';
 
 type PropsType = {
 	id: string
@@ -23,9 +23,11 @@ type PropsType = {
 	filter: string
 	removeTodoList: (todoListID: string) => void
 	changeTodoListTitle: (todoListID: string, newTitle: string) => void
+	demo?: boolean
+
 }
 
-export const TodoList = React.memo((props: PropsType) => {
+export const TodoList = React.memo(function ({demo = false, ...props}: PropsType) {
 	console.log('TodoList is called')
 	const dispatch = useDispatch()
 	useEffect(() => {
