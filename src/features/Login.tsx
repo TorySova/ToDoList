@@ -1,15 +1,22 @@
 import React from 'react'
 import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, TextField, Button, Grid } from '@material-ui/core'
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppRootStateType } from '../state/store';
+import { loginTC } from './auth-reducer';
+import { Redirect } from 'react-router-dom';
 
 export const Login = () => {
     type FormikErrorType = {
         email?: string
         password?: string
         rememberMe?: boolean
-     }
-     
-     const formik = useFormik({
+    }
+
+    const dispatch = useDispatch()
+    const isLoggetIn = useSelector<AppRootStateType>(state => state.auth.isLoggedIn)
+
+    const formik = useFormik({
         initialValues: {
             email: '',
             password: '',
@@ -31,10 +38,14 @@ export const Login = () => {
             return errors;
         },
         onSubmit: values => {
-            alert(JSON.stringify(values));
+            dispatch(loginTC(values))
+            formik.resetForm();
         },
     })
-     
+
+    if(isLoggetIn){
+        return <Redirect to={'/'}/>
+    }
 
     return <Grid container justify="center">
         <Grid item xs={4}>
@@ -66,10 +77,10 @@ export const Login = () => {
                         {formik.errors.password ? <div style={{ color: 'red' }}> {formik.errors.password} </div> : null}
                         <FormControlLabel
                             label={'Remember me'}
-                            control={<Checkbox />}
+                            control={<Checkbox color="primary" />}
                             {...formik.getFieldProps('rememberMe')}
                         />
-                        <Button type={'submit'} variant={'contained'} color={'primary'}>Login</Button>
+                        <Button type={'submit'} variant="outlined" color="primary" >Login</Button>
                     </FormGroup>
                 </FormControl>
             </form>

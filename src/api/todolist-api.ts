@@ -65,6 +65,17 @@ type UpdateTaskModelType = {
     startDate: string
     deadline: string
 }
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe?: boolean
+    captcha?: string
+}
+export type MeResponseType = {
+    id: number
+    email: string
+    login: string
+}
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -100,3 +111,15 @@ export const todolistAPI = {
         return instance.put<UpdateTaskType>(`todo-lists/${todolistId}/tasks/${taskId}`,  model )
     }
 }
+export const authAPI = {
+    login(data: LoginParamsType) {
+        return instance.post<ResponseType<{userId: number}>>('/auth/login', data)
+    },
+    me() {
+        return instance.get<ResponseType<MeResponseType>>('/auth/me')
+    },
+    logout() {
+        return instance.delete<ResponseType<{}>>('/auth/login')
+    }
+ }
+ 
