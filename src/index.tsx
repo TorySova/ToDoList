@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import {store} from './state/store';
-import {Provider} from 'react-redux';
+import { store } from './state/store';
+import { Provider } from 'react-redux';
 import AppWithRedux from './app/App';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 ReactDOM.render(
-    <BrowserRouter>
+    <HashRouter>
         <Provider store={store}>
-       <AppWithRedux />
-   </Provider>
-    </BrowserRouter>, document.getElementById('root'));
+            <AppWithRedux />
+        </Provider>
+    </HashRouter>, document.getElementById('root'));
 
 // ReactDOM.render(<AppWithRedux />,  document.getElementById('root'));
 
